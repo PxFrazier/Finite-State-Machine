@@ -4,15 +4,13 @@ class FiniteStateMachine
     {
         this.states = {
             current_state: null,
-            q0: 'q0',
-            q1: 'q1',
-            q2: 'q2'
+            final_state: 'q1',
+            initial_state: 'q0'
         };
 
         this.transitions = {
-            delta: (input = String(), state = this.states.q0)=>{
-                if(input.length == 0)
-                    return this.states.current_state;
+            delta: (input = String(), state = this.states.initial_state)=>{
+                if(input.length == 0) return;
 
                 let split_input = input.split('');
                 let current_input = split_input[0];
@@ -28,8 +26,7 @@ class FiniteStateMachine
                 let stateMap = new Map();
 
                 stateMap.set('q0', new Map([['0', 'q0'], ['1', 'q1']]));
-                stateMap.set('q1', new Map([['0', 'q0'], ['1', 'q2']]));
-                stateMap.set('q2', new Map([['0', 'q2'], ['1', 'q1']]));
+                stateMap.set('q1', new Map([['0', 'q1'], ['1', 'q0']]));
         
                 return stateMap.get(state);
             }
@@ -39,10 +36,17 @@ class FiniteStateMachine
     evaluate(input)
     {
         this.transitions.delta(input);
-        return this.states.current_state;
+
+        let value;
+        
+        this.states.current_state == this.states.final_state ?
+        value = true :
+        value = false;
+
+        return value;
     }
 }
 
-let machine = new FiniteStateMachine();
+let XOR = new FiniteStateMachine();
 
-console.log(machine.evaluate('101100100010101010101101'));  //Ouputs: q1
+console.log(XOR.evaluate('101'));
